@@ -76,8 +76,8 @@ void movePlayer (Player *player, double delta)
     };
 
     Vector2 normalVector = Vector2Normalize(movementVect);
-    printf("move vect x: %f\n", normalVector.y * delta * player->speed);
-    printf("move vect y: %f\n", normalVector.x * delta * player->speed);
+    //printf("move vect x: %f\n", normalVector.y * delta * player->speed);
+    //printf("move vect y: %f\n", normalVector.x * delta * player->speed);
     
     player->head.posX += normalVector.y * delta * player->speed;
     player->head.posY += normalVector.x * delta * player->speed;
@@ -85,7 +85,7 @@ void movePlayer (Player *player, double delta)
 
 void resetScreen (Player *player)
 {
-    ClearBackground(RAYWHITE);
+    ClearBackground(BLACK);
 
     player->head.posX = 40;
     player->head.posY = 40;
@@ -102,13 +102,6 @@ bool isColliding (Player *player)
     {
         for (u32 i = 0; i < player->tailSize-10; i++)
         {
-            /*if (player->head.posX == player->tail[i].posX &&
-                player->head.posY == player->tail[i].posY)
-            {
-                printf("Collide!\n");
-                return true;
-            }*/
-
             Vector2 tail = {
                 .x = player->tail[i].x,
                 .y = player->tail[i].y
@@ -133,7 +126,7 @@ int main()
         .head =         {.posX = 40, .posY = 40, .radius = 3},
         .tail =         {0},
         .tailSize =     0,
-        .color =        DARKBLUE,
+        .color =        GREEN,
         .speed =        1,
         .turnSpeed =    5,
         .direction =    /*GetRandomValue(0, 360)*/ 0,
@@ -147,7 +140,7 @@ int main()
     SetTargetFPS(MAX_FPS);
     //SetRandomSeed(30000);
 
-    ClearBackground(RAYWHITE);
+    ClearBackground(BLACK);
 
     u32 frameCount = 0;
     u32 fps = GetFPS();
@@ -158,12 +151,9 @@ int main()
         frameDelta = 100 * (currentFrame - lastFrame);
         lastFrame = currentFrame;
         sprintf(buf, "%f", frameDelta);
-        //printf("%s\n", buf);
-        printf("Direction: %f\n", p1.direction);
 
         BeginDrawing();
 
-            DrawCircle(p1.head.posX, p1.head.posY, p1.head.radius, p1.color);
             DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
             DrawFPS(SCREEN_WIDTH/2, SCREEN_HEIGHT-20);
 
@@ -182,6 +172,14 @@ int main()
                 resetScreen(&p1);
             }
 
+            if (isColliding(&p1))
+            {
+                resetScreen(&p1);
+                memset(p1.tail, 0, sizeof(Vector2) * p1.tailSize);
+                p1.tailSize = 0;
+            }
+
+            DrawCircle(p1.head.posX, p1.head.posY, p1.head.radius, p1.color);
             p1.tail[p1.tailSize].x = p1.head.posX;
             p1.tail[p1.tailSize].y = p1.head.posY;
             //printf("TAIL %d --- PosX: %d,   PosY: %d\n", p1.tailSize, p1.tail[p1.tailSize].posX, p1.tail[p1.tailSize].posY);
