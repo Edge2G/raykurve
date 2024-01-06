@@ -1,146 +1,38 @@
-#include<stdio.h>
-#include<string.h>
-#include<raylib.h>
-#include<raymath.h>
-
-typedef __uint32_t u32;
-
-#define SCREEN_WIDTH     900
-#define SCREEN_HEIGHT    600
-#define MAX_FPS           60
-#define N_PLAYERS          2
-#define WINDOW_TITLE "Raykurve"
-#define PIXEL_COUNT    SCREEN_WIDTH * SCREEN_HEIGHT
-
-static const double FRAMETIME = 1/MAX_FPS;
-
-typedef struct Circle {
-    float         posX;
-    float         posY;
-    u32         radius;
-} Circle;
-
-typedef struct Player {
-    Circle      head;
-    Vector2     tail[ (int)(PIXEL_COUNT / (2*N_PLAYERS)) ];
-    u32         tailSize;
-    Color       color;
-    float       speed;
-    float       turnSpeed;
-    double      direction;
-} Player;
-
-void checkPlayerDirection (Player *player)
-{
-    if (player->direction >= 360)
-    {
-        player->direction = 0;
-    }
-
-    if (player->direction < 0)
-    {
-        player->direction = 360;
-    }
-}
-
-void moveWarp (Player *player)
-{
-    if (player->head.posX > SCREEN_WIDTH)
-    {
-        player->head.posX = 0;
-    }
-    if (player->head.posX < 0)
-    {
-        player->head.posX = SCREEN_WIDTH;
-    }
-
-    if (player->head.posY > SCREEN_HEIGHT)
-    {
-        player->head.posY = 0;
-    }
-    if (player->head.posY < 0)
-    {
-        player->head.posY = SCREEN_HEIGHT;
-    }
-}
-
-void movePlayer (Player *player, double delta)
-{
-    checkPlayerDirection(player);
-
-    moveWarp(player);
-
-    Vector2 movementVect = {
-        .x = cos( DEG2RAD * player->direction ),
-        .y = sin( DEG2RAD * player->direction )
-    };
-
-    Vector2 normalVector = Vector2Normalize(movementVect);
-    //printf("move vect x: %f\n", normalVector.y * delta * player->speed);
-    //printf("move vect y: %f\n", normalVector.x * delta * player->speed);
-    
-    player->head.posX += normalVector.y * delta * player->speed;
-    player->head.posY += normalVector.x * delta * player->speed;
-}
-
-void resetScreen (Player *player)
-{
-    ClearBackground(BLACK);
-
-    player->head.posX = 40;
-    player->head.posY = 40;
-}
-
-bool isColliding (Player *player)
-{
-    Vector2 head = {
-        .x = player->head.posX,
-        .y = player->head.posY
-    };
-
-    if (player->tailSize > 10)
-    {
-        for (u32 i = 0; i < player->tailSize-10; i++)
-        {
-            Vector2 tail = {
-                .x = player->tail[i].x,
-                .y = player->tail[i].y
-            };
-
-            if (CheckCollisionCircles(head, player->head.radius, tail, player->head.radius))
-            {
-                printf("Collide!\n");
-                return true;
-            }
-        }
-    }
-
-    return false;
-}
+#include "main.h"
 
 int main()
 {
     SetTraceLogLevel(LOG_ERROR);
+    SetRandomSeed(30000);
 
-    Player p1 = {
-        .head =         {.posX = 40, .posY = 40, .radius = 3},
-        .tail =         {0},
-        .tailSize =     0,
-        .color =        GREEN,
-        .speed =        1,
-        .turnSpeed =    5,
-        .direction =    /*GetRandomValue(0, 360)*/ 0,
+    Player p1;
+    initializePlayer(&p1, 1);
+
+    Rectangle areaFrame = {
+        .height =       SCREEN_HEIGHT - (2*GAME_AREA_PADDING_Y),
+        .width =        0.75 * SCREEN_WIDTH,
+        .x =            0.25 * SCREEN_WIDTH - GAME_AREA_PADDING_X,
+        .y =            GAME_AREA_PADDING_Y
     };
 
+    PlayArea playArea = {
+        .frame =        areaFrame,
+        .frameColor =   GRAY,
+        .thickness =    10,
+    };
+    playArea.frameXend = areaFrame.x + areaFrame.width - playArea.thickness;
+    playArea.frameYend = areaFrame.y + areaFrame.height - playArea.thickness;
+
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE);
     double frameDelta;
     double currentFrame;
     double lastFrame = GetTime();
     char buf[30];
     SetTargetFPS(MAX_FPS);
-    //SetRandomSeed(30000);
 
     ClearBackground(BLACK);
+    drawFrame(playArea);
 
     u32 frameCount = 0;
     u32 fps = GetFPS();
@@ -169,12 +61,12 @@ int main()
 
             if (IsKeyDown(KEY_UP))
             {
-                resetScreen(&p1);
+                resetScreen(&p1, playArea);
             }
 
             if (isColliding(&p1))
             {
-                resetScreen(&p1);
+                resetScreen(&p1, playArea);
                 memset(p1.tail, 0, sizeof(Vector2) * p1.tailSize);
                 p1.tailSize = 0;
             }
@@ -182,11 +74,9 @@ int main()
             DrawCircle(p1.head.posX, p1.head.posY, p1.head.radius, p1.color);
             p1.tail[p1.tailSize].x = p1.head.posX;
             p1.tail[p1.tailSize].y = p1.head.posY;
-            //printf("TAIL %d --- PosX: %d,   PosY: %d\n", p1.tailSize, p1.tail[p1.tailSize].posX, p1.tail[p1.tailSize].posY);
             movePlayer(&p1, frameDelta);
             frameCount++;
             p1.tailSize++;
-            //ClearBackground(RAYWHITE);
 
         EndDrawing();
     }

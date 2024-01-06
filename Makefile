@@ -1,7 +1,8 @@
 LDFLAGS = -lraylib -lm
+LIBS = ui.c player.c
 
 Compile: main.c
-	gcc -o a.out main.c $(LDFLAGS) -g
+	gcc -o a.out main.c $(LIBS) $(LDFLAGS) -g
 
 test: a.out
 	./a.out
