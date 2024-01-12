@@ -3,6 +3,10 @@
 #include <raylib.h>
 #include <raymath.h>
 
+#include "shapes.h"
+
+typedef __uint32_t u32;
+
 typedef struct Player {
     Circle      head;
     Vector2     tail[10000];
@@ -11,10 +15,5 @@ typedef struct Player {
     float       speed;
     float       turnSpeed;
     double      direction;
+    bool        createHole;
 } Player;
-
-void checkPlayerDirection (Player *player);
-void moveWarp (Player *player);
-void movePlayer (Player *player, double delta);
-bool isColliding (Player *player);
-void initializePlayer(Player *player, u32 playerCount);

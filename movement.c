@@ -1,5 +1,4 @@
-#include "main.h"
-#include "player.h"
+#include "movement.h"
 
 void checkPlayerDirection (Player *player)
 {
@@ -14,32 +13,32 @@ void checkPlayerDirection (Player *player)
     }
 }
 
-void moveWarp (Player *player)
+void moveWarp (Player *player, PlayArea *playArea)
 {
-    if (player->head.posX > SCREEN_WIDTH)
+    if (player->head.posX > playArea->innerXend)
     {
-        player->head.posX = 0;
+        player->head.posX = playArea->innerFrame.x;
     }
-    if (player->head.posX < 0)
+    if (player->head.posX < playArea->innerFrame.x)
     {
-        player->head.posX = SCREEN_WIDTH;
+        player->head.posX = playArea->innerXend;
     }
 
-    if (player->head.posY > SCREEN_HEIGHT)
+    if (player->head.posY > playArea->innerYend)
     {
-        player->head.posY = 0;
+        player->head.posY = playArea->innerFrame.y;
     }
-    if (player->head.posY < 0)
+    if (player->head.posY < playArea->innerFrame.y)
     {
-        player->head.posY = SCREEN_HEIGHT;
+        player->head.posY = playArea->innerYend;
     }
 }
 
-void movePlayer (Player *player, double delta)
+void movePlayer (Player *player, double delta, PlayArea *playArea)
 {
     checkPlayerDirection(player);
 
-    moveWarp(player);
+    moveWarp(player, playArea);
 
     Vector2 movementVect = {
         .x = cos( DEG2RAD * player->direction ),
@@ -78,12 +77,12 @@ bool isColliding (Player *player)
     return false;
 }
 
-void initializePlayer(Player *player, u32 playerCount)
+void initializePlayer(Player *player, u32 playerCount, PlayArea *playArea)
 {
     player->color = GREEN;
 
-    player->head.posX = GetRandomValue(20,80);
-    player->head.posY = GetRandomValue(20,80);
+    player->head.posX = GetRandomValue(playArea->innerFrame.x + 20, playArea->innerFrame.x + 80);
+    player->head.posY = GetRandomValue(playArea->innerFrame.y + 20, playArea->innerFrame.y + 80);
     player->head.radius = 3;
 
     //player->tail = {{0}};
@@ -92,4 +91,10 @@ void initializePlayer(Player *player, u32 playerCount)
     player->speed = 1;
     player->turnSpeed = 5;
     player->direction = GetRandomValue(0, 360);
+}
+
+void changeSpawnPoint(Player *player, u32 playerCount, PlayArea *playArea)
+{
+    player->head.posX = GetRandomValue(playArea->innerFrame.x + 40, playArea->innerFrame.x + 120);
+    player->head.posY = GetRandomValue(playArea->innerFrame.y + 40, playArea->innerFrame.y + 120);
 }
