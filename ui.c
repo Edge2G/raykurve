@@ -1,5 +1,15 @@
 #include "ui.h"
 
+void drawPlayer(Player *player)
+{
+    DrawCircle(player->head.posX, player->head.posY, player->head.radius, player->color);
+}
+
+void drawShadow(Player *player)
+{
+    DrawCircle(player->prevHeadPos.x, player->prevHeadPos.y, player->head.radius, player->eraser);
+}
+
 void drawFrame(PlayArea *playArea)
 {
     DrawRectangleRec(playArea->outerFrame, playArea->outerColor);
@@ -15,8 +25,8 @@ void resetScreen (Player *player, PlayArea *playArea)
     ClearBackground(BLACK);
     drawFrame(playArea);
 
-    player->head.posX = 40;
-    player->head.posY = 40;
+    player->head.posX = GetRandomValue(playArea->innerFrame.x + 20, playArea->innerFrame.x + 80);
+    player->head.posY = GetRandomValue(playArea->innerFrame.y + 20, playArea->innerFrame.y + 80);
 }
 
 void initializePlayArea(PlayArea *playArea)

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdio.h>
+
 #include "player.h"
 #include "ui.h"
 

@@ -2,11 +2,11 @@
 
 #include <raylib.h>
 
-#include "player.h"
+#include <stdio.h>
 
 #define WINDOW_TITLE "Raykurve"
-#define SCREEN_WIDTH      1600
-#define SCREEN_HEIGHT      900
+#define SCREEN_WIDTH       900
+#define SCREEN_HEIGHT      600
 #define MAX_FPS             60
 #define N_PLAYERS            1
 #define PIXEL_COUNT    SCREEN_WIDTH * SCREEN_HEIGHT
@@ -23,6 +23,10 @@ typedef struct PlayArea {
     float       innerYend;
 } PlayArea;
 
+#include "player.h"
+
+void drawPlayer(Player *player);
+void drawShadow(Player *player);
 void drawFrame(PlayArea *playArea);
 void drawMoveArea(PlayArea *playArea);
 void resetScreen (Player *player, PlayArea *playArea);

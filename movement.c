@@ -47,8 +47,8 @@ void movePlayer (Player *player, double delta, PlayArea *playArea)
 
     Vector2 normalVector = Vector2Normalize(movementVect);
 
-    player->head.posX += normalVector.y * delta * player->speed;
-    player->head.posY += normalVector.x * delta * player->speed;
+    player->head.posX += normalVector.x * delta * player->speed * 100;
+    player->head.posY += normalVector.y * delta * player->speed * 100;
 }
 
 bool isColliding (Player *player)
@@ -69,28 +69,13 @@ bool isColliding (Player *player)
 
             if (CheckCollisionCircles(head, player->head.radius, tail, player->head.radius))
             {
+                printf("Collide!\n");
                 return true;
             }
         }
     }
 
     return false;
-}
-
-void initializePlayer(Player *player, u32 playerCount, PlayArea *playArea)
-{
-    player->color = GREEN;
-
-    player->head.posX = GetRandomValue(playArea->innerFrame.x + 20, playArea->innerFrame.x + 80);
-    player->head.posY = GetRandomValue(playArea->innerFrame.y + 20, playArea->innerFrame.y + 80);
-    player->head.radius = 3;
-
-    //player->tail = {{0}};
-    player->tailSize = 0;
-
-    player->speed = 1;
-    player->turnSpeed = 5;
-    player->direction = GetRandomValue(0, 360);
 }
 
 void changeSpawnPoint(Player *player, u32 playerCount, PlayArea *playArea)

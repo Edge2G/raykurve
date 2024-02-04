@@ -4,16 +4,17 @@ void handleInput(Player *player, PlayArea *playArea)
 {
     if (IsKeyDown(KEY_LEFT))
     {
-        player->direction += player->turnSpeed;
+        player->direction -= player->turnSpeed;
     }
 
     if (IsKeyDown(KEY_RIGHT))
     {
-        player->direction -= player->turnSpeed;
+        player->direction += player->turnSpeed;
     }
 
-    if (IsKeyDown(KEY_UP))
+    if (IsKeyPressed(KEY_UP))
     {
-        resetScreen(player, playArea);
+        if (player->shouldDraw) player->shouldDraw = false;
+        else player->shouldDraw = true;
     }
 }

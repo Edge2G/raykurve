@@ -1,5 +1,5 @@
 LDFLAGS = -lraylib -lm
-LIBS = ui.c movement.c input.c
+LIBS = ui.c movement.c input.c player.c
 
 Compile: main.c
 	gcc -o a.out main.c $(LIBS) $(LDFLAGS) -g
