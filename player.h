@@ -14,8 +14,6 @@ typedef struct Player {
     Circle      head;
     Vector2     tail[10000];
     u32         tailSize;
-    Vector2     prevHeadPos;
-    float       shadowDelay;
 
     Color       color;
     Color       eraser;
@@ -25,8 +23,9 @@ typedef struct Player {
     float       direction;
 
     bool        shouldDraw;
-    float       timeTillErase;
-    float       eraseDuration;
+    double      timeTillErase;
+    double      eraseDuration;
+    double      dtCounter;
 } Player;
 
 #include "ui.h"
@@ -34,7 +33,5 @@ typedef struct Player {
 void resetPlayer(Player *player);
 void initializePlayer(Player *player, u32 playerCount, PlayArea *playArea);
 void increaseTailSize(Player *player);
-void setBodyTimer(Player *player);
-void updateBodyTimer(Player *player, double deltaTime);
-bool isEraseTimerDone(Player *player);
-void checkEraseTimers(Player *player);
+void setEraseTimers(Player *player);
+bool shouldErase(Player *player, double dt);

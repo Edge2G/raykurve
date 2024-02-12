@@ -26,7 +26,6 @@ typedef struct PlayArea {
 #include "player.h"
 
 void drawPlayer(Player *player);
-void drawShadow(Player *player);
 void drawFrame(PlayArea *playArea);
 void drawMoveArea(PlayArea *playArea);
 void resetScreen (Player *player, PlayArea *playArea);

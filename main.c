@@ -31,21 +31,34 @@ int main()
 
             if (p1.shouldDraw)
             {
+                if (p1.dtCounter >= p1.timeTillErase)
+                {
+                    p1.shouldDraw = false;
+                    p1.dtCounter = 0;
+                    setEraseTimers(&p1);
+                }
+
                 drawPlayer(&p1);
                 increaseTailSize(&p1);
                 movePlayer(&p1, frameDelta, &playArea);
-            }
-            else
+                p1.dtCounter += frameDelta;
+            }            
+            if (!p1.shouldDraw)
             {
-                p1.shadowDelay += frameDelta;
-                if (p1.shadowDelay >= 0.1)
+                if (p1.dtCounter >= p1.eraseDuration)
                 {
-                    p1.prevHeadPos.x = p1.head.posX;
-                    p1.prevHeadPos.y = p1.head.posY;
-                    drawPlayer(&p1);
-                    drawShadow(&p1);
-                    movePlayer(&p1, frameDelta, &playArea);
+                    p1.shouldDraw = true;
+                    p1.dtCounter = 0;
                 }
+                
+                drawMoveArea(&playArea);
+                for (u32 i = 0; i < p1.tailSize; i++)
+                {
+                    DrawCircle(p1.tail[i].x, p1.tail[i].y, p1.head.radius, p1.color);
+                }
+                drawPlayer(&p1);
+                movePlayer(&p1, frameDelta, &playArea);
+                p1.dtCounter += frameDelta;
             }
 
             if (isColliding(&p1))

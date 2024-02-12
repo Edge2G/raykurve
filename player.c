@@ -15,8 +15,6 @@ void initializePlayer(Player *player, u32 playerCount, PlayArea *playArea)
     player->head.posY = GetRandomValue(playArea->innerFrame.y + 20, playArea->innerFrame.y + 80);
     player->head.radius = 3;
 
-    player->shadowDelay = 0.0;
-
     //player->tail = {{0}};
     //memset(player->tail, 0, sizeof(Vector2));
     //player->tail = malloc(sizeof(Vector2) * 10000);
@@ -28,8 +26,8 @@ void initializePlayer(Player *player, u32 playerCount, PlayArea *playArea)
 
     player->shouldDraw = true;
 
-    player->timeTillErase = 3.0;
-    player->eraseDuration = 1.0;
+    player->timeTillErase = GetRandomValue(200, 500)/100.0;
+    player->eraseDuration = GetRandomValue(30, 100)/100.0;
 }
 
 void increaseTailSize(Player *player)
@@ -41,42 +39,22 @@ void increaseTailSize(Player *player)
     player->tailSize++;
 }
 
-/*void setBodyTimer(Player *player)
+void setEraseTimers(Player *player)
 {
-    if (player->shouldDraw)
+    player->timeTillErase = GetRandomValue(200, 500)/100.0;
+    player->eraseDuration = GetRandomValue(30, 100)/100.0; 
+}
+
+bool shouldErase(Player *player, double dt)
+{
+    if (player->dtCounter < player->timeTillErase)
     {
-        player->shouldDraw = GetRandomValue(0, 1);
-    }
+        player->dtCounter += dt;
+        return false;  
+    } 
     else
     {
-        player->timeTillErase = GetRandomValue(2, 4);
-    }
-}
-
-void updateBodyTimer(Player *player, double deltaTime)
-{
-    if (player->shouldDraw && player->timeTillErase > 0)
-    {
-        player->timeTillErase -= deltaTime;
-    }
-
-    if (!player->shouldDraw && player->eraseDuration > 0)
-    {
-        player->eraseDuration -= deltaTime;
-    }
-}
-
-bool isEraseTimerDone(Player *player)
-{
-    if (player->eraseDuration <= 0)
-    {
+        player->dtCounter = 0;
         return true;
     }
-
-    return false;
 }
-
-void checkEraseTimers(Player *player)
-{
-
-}*/

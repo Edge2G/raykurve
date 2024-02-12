@@ -5,11 +5,6 @@ void drawPlayer(Player *player)
     DrawCircle(player->head.posX, player->head.posY, player->head.radius, player->color);
 }
 
-void drawShadow(Player *player)
-{
-    DrawCircle(player->prevHeadPos.x, player->prevHeadPos.y, player->head.radius, player->eraser);
-}
-
 void drawFrame(PlayArea *playArea)
 {
     DrawRectangleRec(playArea->outerFrame, playArea->outerColor);
