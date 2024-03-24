@@ -1,5 +1,23 @@
 #include "ui.h"
 
+void initializeMainMenu(MainMenu *mainMenu)
+{
+    //mainMenu->options[1] = "Instructions";
+    //mainMenu->options[2] = "Exit";
+    //mainMenu->options[0] = "Play";
+
+    mainMenu->currentOption = 0;
+}
+
+void drawMainMenu(MainMenu *mainMenu)
+{
+    ClearBackground(BLACK);
+    DrawText("Raykurve", SCREEN_WIDTH/8, SCREEN_HEIGHT/8, 120, BLUE);
+    DrawText("Play", SCREEN_WIDTH/8, SCREEN_HEIGHT/2, 40, WHITE);
+    DrawText("How to play", SCREEN_WIDTH/8, SCREEN_HEIGHT/2 + 100, 40, WHITE);
+    DrawText("Exit", SCREEN_WIDTH/8, SCREEN_HEIGHT/2 + 200, 40, WHITE);
+}
+
 void drawPlayer(Player *player)
 {
     DrawCircle(player->head.posX, player->head.posY, player->head.radius, player->color);

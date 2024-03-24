@@ -5,13 +5,15 @@ int main()
     SetTraceLogLevel(LOG_ERROR);
     SetRandomSeed((unsigned)time(NULL));
 
+    MainMenu mainMenu = {.currentOption = 1};
+
     PlayArea playArea;
     initializePlayArea(&playArea);
 
     Player p1;
     initializePlayer(&p1, 1, &playArea);
 
-    //SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE);
     SetTargetFPS(MAX_FPS);
 
@@ -29,6 +31,12 @@ int main()
         BeginDrawing();
             handleInput(&p1, &playArea);
 
+            if (mainMenu.currentOption == 1)
+            {
+                drawMainMenu(&mainMenu);
+            }
+            else
+            { 
             if (p1.shouldDraw)
             {
                 if (p1.dtCounter >= p1.timeTillErase)
@@ -68,6 +76,7 @@ int main()
                 drawMoveArea(&playArea);
                 changeSpawnPoint(&p1, 1, &playArea);
             }
+           }
 
         EndDrawing();
     }
